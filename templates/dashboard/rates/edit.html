@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ title }}</h4>
+    <a href="{% url 'rate_plan_list' %}" class="btn btn-outline-secondary btn-sm">Back</a>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Rate Plan Details -->
+    <div class="card mb-3">
+        <div class="card-header"><h6 class="mb-0">Rate Plan Settings</h6></div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Name</label>
+                    {{ form.name }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Type</label>
+                    {{ form.plan_type }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Source</label>
+                    {{ form.source }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Cancellation</label>
+                    {{ form.cancellation_policy }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Priority</label>
+                    {{ form.priority }}
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check mt-4">
+                        {{ form.is_default }} <label class="form-check-label">Default</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check mt-4">
+                        {{ form.is_active }} <label class="form-check-label">Active</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Type Rates -->
+    <div class="card mb-3">
+        <div class="card-header"><h6 class="mb-0">Room Type Rates (₹ per night)</h6></div>
+        <div class="card-body">
+            {{ formset.management_form }}
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Room Type</th>
+                        <th>Base Rate</th>
+                        <th>Extra Adult</th>
+                        <th>Extra Child</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in formset %}
+                    <tr>
+                        <td>{{ f.id }}{{ f.room_type }}</td>
+                        <td>{{ f.base_rate }}</td>
+                        <td>{{ f.extra_adult_rate }}</td>
+                        <td>{{ f.extra_child_rate }}</td>
+                        <td>{{ f.DELETE }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save All Changes</button>
+</form>
+{% endblock %}

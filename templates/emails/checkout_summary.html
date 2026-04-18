@@ -1,0 +1,15 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<p>Dear {{ guest_name }},</p>
+
+<p>Thank you for staying at {{ hotel_name }}! We hope you had a wonderful experience.</p>
+
+<div class="info-box">
+    <div class="info-row"><span class="info-label">Booking #</span><span class="info-value">{{ confirmation_number }}</span></div>
+    <div class="info-row"><span class="info-label">Total</span><span class="info-value">₹{{ total_amount }}</span></div>
+    <div class="info-row"><span class="info-label">Paid</span><span class="info-value">₹{{ paid_amount }}</span></div>
+</div>
+
+<p>We hope to see you again!</p>
+{% endblock %}

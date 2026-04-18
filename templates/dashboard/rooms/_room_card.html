@@ -1,0 +1,39 @@
+<div class="card h-100">
+    <div class="card-body text-center p-3">
+        <h5 class="mb-1">{{ room.room_number }}</h5>
+        <small class="text-muted d-block mb-2">{{ room.room_type.name }}</small>
+        <span class="badge badge-{{ room.status }} mb-2">{{ room.get_status_display }}</span>
+
+        {% if room.status == "dirty" %}
+        <form hx-post="{% url 'update_room_status' room.pk %}"
+              hx-target="#room-{{ room.pk }}"
+              hx-swap="innerHTML">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="available">
+            <button type="submit" class="btn btn-sm btn-success w-100 mt-1">
+                <i class="bi bi-check-circle me-1"></i> Mark Clean
+            </button>
+        </form>
+        {% elif room.status == "available" %}
+        <form hx-post="{% url 'update_room_status' room.pk %}"
+              hx-target="#room-{{ room.pk }}"
+              hx-swap="innerHTML">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="maintenance">
+            <button type="submit" class="btn btn-sm btn-outline-warning w-100 mt-1">
+                <i class="bi bi-tools me-1"></i> Maintenance
+            </button>
+        </form>
+        {% elif room.status == "maintenance" %}
+        <form hx-post="{% url 'update_room_status' room.pk %}"
+              hx-target="#room-{{ room.pk }}"
+              hx-swap="innerHTML">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="available">
+            <button type="submit" class="btn btn-sm btn-outline-success w-100 mt-1">
+                <i class="bi bi-check-circle me-1"></i> Clear
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>

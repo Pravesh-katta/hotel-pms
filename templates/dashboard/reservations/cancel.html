@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Cancel — {{ reservation.confirmation_number }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h4>Cancel Reservation — #{{ reservation.confirmation_number }}</h4>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-sm">
+            <tr><td class="text-muted">Guest</td><td>{{ reservation.guest.full_name }}</td></tr>
+            <tr><td class="text-muted">Check-in</td><td>{{ reservation.check_in_date|date:"d M Y" }}</td></tr>
+            <tr><td class="text-muted">Check-out</td><td>{{ reservation.check_out_date|date:"d M Y" }}</td></tr>
+        </table>
+
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            Are you sure you want to cancel this reservation? Cancellation fees may apply based on the rate plan policy.
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-x-circle me-1"></i> Confirm Cancellation
+            </button>
+            <a href="{% url 'reservation_detail' reservation.pk %}" class="btn btn-outline-secondary ms-2">Go Back</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

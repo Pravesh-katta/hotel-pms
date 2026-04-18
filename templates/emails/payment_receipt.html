@@ -1,0 +1,16 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<p>Dear {{ guest_name }},</p>
+
+<p>We've received your payment.</p>
+
+<div class="info-box">
+    <div class="info-row"><span class="info-label">Amount</span><span class="info-value">₹{{ amount }}</span></div>
+    <div class="info-row"><span class="info-label">Method</span><span class="info-value">{{ method }}</span></div>
+    <div class="info-row"><span class="info-label">Booking #</span><span class="info-value">{{ confirmation_number }}</span></div>
+    <div class="info-row"><span class="info-label">Balance</span><span class="info-value">₹{{ balance }}</span></div>
+</div>
+
+<p>Thank you!</p>
+{% endblock %}

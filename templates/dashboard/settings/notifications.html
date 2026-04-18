@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Notification Settings{% endblock %}
+
+{% block content %}
+<h4 class="mb-4">Notification Settings</h4>
+
+{% if prefs %}
+<div class="card" style="max-width: 600px;">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <h6 class="mb-3">Channels</h6>
+            <div class="form-check mb-2">
+                <input type="checkbox" name="whatsapp_enabled" class="form-check-input" id="wa"
+                       {% if prefs.whatsapp_enabled %}checked{% endif %}>
+                <label class="form-check-label" for="wa">WhatsApp</label>
+            </div>
+            <div class="form-check mb-2">
+                <input type="checkbox" name="sms_enabled" class="form-check-input" id="sms"
+                       {% if prefs.sms_enabled %}checked{% endif %}>
+                <label class="form-check-label" for="sms">SMS</label>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" name="email_enabled" class="form-check-input" id="email"
+                       {% if prefs.email_enabled %}checked{% endif %}>
+                <label class="form-check-label" for="email">Email</label>
+            </div>
+
+            <hr>
+            <h6 class="mb-3">Guest Notifications</h6>
+            <div class="form-check mb-2">
+                <input type="checkbox" name="send_booking_confirm" class="form-check-input" id="bc"
+                       {% if prefs.send_booking_confirm %}checked{% endif %}>
+                <label class="form-check-label" for="bc">Booking confirmation</label>
+            </div>
+            <div class="form-check mb-2">
+                <input type="checkbox" name="send_checkin_reminder" class="form-check-input" id="cr"
+                       {% if prefs.send_checkin_reminder %}checked{% endif %}>
+                <label class="form-check-label" for="cr">Check-in reminder (1 day before)</label>
+            </div>
+            <div class="form-check mb-2">
+                <input type="checkbox" name="send_payment_receipt" class="form-check-input" id="pr"
+                       {% if prefs.send_payment_receipt %}checked{% endif %}>
+                <label class="form-check-label" for="pr">Payment receipt</label>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" name="send_checkout_summary" class="form-check-input" id="cs"
+                       {% if prefs.send_checkout_summary %}checked{% endif %}>
+                <label class="form-check-label" for="cs">Checkout summary + invoice</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<p class="text-muted">Select a hotel to configure notifications.</p>
+{% endif %}
+{% endblock %}

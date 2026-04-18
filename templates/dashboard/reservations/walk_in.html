@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Walk-in Booking{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Walk-in Booking</h4>
+    <a href="{% url 'reservation_list' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <h6 class="mb-3">Guest Details</h6>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">First Name *</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Last Name *</label>
+                    {{ form.last_name }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Phone *</label>
+                    {{ form.phone }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">ID Type</label>
+                    {{ form.id_type }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">ID Number</label>
+                    {{ form.id_number }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Nationality</label>
+                    {{ form.nationality }}
+                </div>
+            </div>
+
+            <hr>
+            <h6 class="mb-3">Room & Stay</h6>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Room *</label>
+                    {{ form.room }}
+                    <small class="text-muted">Only available rooms shown</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Nights *</label>
+                    {{ form.nights }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Adults</label>
+                    {{ form.num_adults }}
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i> Book & Check In
+                </button>
+                <small class="text-muted ms-2">Creates reservation and checks in immediately</small>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

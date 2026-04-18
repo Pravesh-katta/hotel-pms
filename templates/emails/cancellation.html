@@ -1,0 +1,14 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<p>Dear {{ guest_name }},</p>
+
+<p>Your booking has been cancelled as requested.</p>
+
+<div class="info-box">
+    <div class="info-row"><span class="info-label">Booking #</span><span class="info-value">{{ confirmation_number }}</span></div>
+    <div class="info-row"><span class="info-label">Hotel</span><span class="info-value">{{ hotel_name }}</span></div>
+</div>
+
+<p>We hope to welcome you in the future.</p>
+{% endblock %}

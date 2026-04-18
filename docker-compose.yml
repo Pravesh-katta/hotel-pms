@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: hotel_pms
+      POSTGRES_USER: hotel_pms
+      POSTGRES_PASSWORD: hotel_pms_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DJANGO_ENV: local
+      DJANGO_SETTINGS_MODULE: hotel_pms.settings.local
+      DATABASE_URL: postgres://hotel_pms:hotel_pms_dev@db:5432/hotel_pms
+
+volumes:
+  pgdata:

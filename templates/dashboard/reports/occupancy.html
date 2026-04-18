@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Occupancy Report{% endblock %}
+
+{% block content %}
+<h4 class="mb-4">Occupancy Report (Last 30 Days)</h4>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    {% if not request.hotel %}<th>Hotel</th>{% endif %}
+                    <th>Occupied</th>
+                    <th>Total</th>
+                    <th>Occupancy %</th>
+                    <th>Revenue</th>
+                    <th>Arrivals</th>
+                    <th>Departures</th>
+                    <th>No-shows</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in snapshots %}
+                <tr>
+                    <td>{{ s.audit_date|date:"d M Y" }}</td>
+                    {% if not request.hotel %}<td>{{ s.hotel.code }}</td>{% endif %}
+                    <td>{{ s.occupied_rooms }}</td>
+                    <td>{{ s.total_rooms }}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress" style="width: 80px; height: 8px;">
+                                <div class="progress-bar {% if s.occupancy_percent >= 80 %}bg-success{% elif s.occupancy_percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                                     style="width: {{ s.occupancy_percent }}%"></div>
+                            </div>
+                            {{ s.occupancy_percent }}%
+                        </div>
+                    </td>
+                    <td class="amount">₹{{ s.revenue_posted|floatformat:0 }}</td>
+                    <td>{{ s.arrivals_tomorrow }}</td>
+                    <td>{{ s.departures_tomorrow }}</td>
+                    <td>{{ s.noshow_count }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="9" class="text-center text-muted py-4">No audit data yet. Night audit runs daily at 00:30.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

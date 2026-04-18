@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Billing{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Billing / Folios</h4>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <select name="status" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                <option value="open" {% if current_status == "open" %}selected{% endif %}>Open</option>
+                <option value="settled" {% if current_status == "settled" %}selected{% endif %}>Settled</option>
+                <option value="void" {% if current_status == "void" %}selected{% endif %}>Void</option>
+            </select>
+            {% if current_status %}
+            <a href="{% url 'folio_list' %}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Folio #</th>
+                    <th>Booking</th>
+                    <th>Guest</th>
+                    <th>Charges</th>
+                    <th>Paid</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for folio in folios %}
+                <tr>
+                    <td><a href="{% url 'folio_detail' folio.pk %}" class="fw-medium text-decoration-none">{{ folio.folio_number }}</a></td>
+                    <td>{{ folio.reservation.confirmation_number }}</td>
+                    <td>{{ folio.reservation.guest.full_name }}</td>
+                    <td class="amount">₹{{ folio.total_charges|floatformat:0 }}</td>
+                    <td class="amount text-success">₹{{ folio.total_payments|floatformat:0 }}</td>
+                    <td class="amount {% if folio.balance > 0 %}text-danger fw-bold{% endif %}">₹{{ folio.balance|floatformat:0 }}</td>
+                    <td><span class="badge bg-{% if folio.status == 'settled' %}success{% elif folio.status == 'void' %}secondary{% else %}primary{% endif %}">{{ folio.get_status_display }}</span></td>
+                    <td><a href="{% url 'folio_detail' folio.pk %}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center text-muted py-4">No folios found</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

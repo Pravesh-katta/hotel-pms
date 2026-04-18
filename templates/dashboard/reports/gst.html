@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}GST Report{% endblock %}
+
+{% block content %}
+<h4 class="mb-4">GST Report</h4>
+
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <input type="date" name="start" value="{{ start_date|date:'Y-m-d' }}" class="form-control form-control-sm" style="width: auto;">
+            <span>to</span>
+            <input type="date" name="end" value="{{ end_date|date:'Y-m-d' }}" class="form-control form-control-sm" style="width: auto;">
+            <button type="submit" class="btn btn-sm btn-primary">Apply</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Guest</th>
+                    {% if not request.hotel %}<th>Hotel</th>{% endif %}
+                    <th class="text-end">Room Charges</th>
+                    <th class="text-end">CGST</th>
+                    <th class="text-end">SGST</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fd in folio_data %}
+                <tr>
+                    <td>{{ fd.folio.folio_number }}</td>
+                    <td>{{ fd.folio.reservation.guest.full_name }}</td>
+                    {% if not request.hotel %}<td>{{ fd.folio.hotel.code }}</td>{% endif %}
+                    <td class="text-end amount">₹{{ fd.room_charges|floatformat:2 }}</td>
+                    <td class="text-end amount">₹{{ fd.cgst|floatformat:2 }}</td>
+                    <td class="text-end amount">₹{{ fd.sgst|floatformat:2 }}</td>
+                    <td class="text-end amount fw-bold">₹{{ fd.total|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center text-muted py-4">No data for selected period</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

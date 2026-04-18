@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Rooms{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Rooms</h4>
+    <a href="{% url 'room_status_board' %}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-grid-3x3 me-1"></i> Status Board
+    </a>
+</div>
+
+<!-- Filters -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <select name="status" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <option value="">All Status</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <select name="type" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <option value="">All Types</option>
+                {% for rt in room_types %}
+                <option value="{{ rt }}" {% if current_type == rt %}selected{% endif %}>{{ rt }}</option>
+                {% endfor %}
+            </select>
+            {% if current_status or current_type %}
+            <a href="{% url 'room_list' %}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Room Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Room #</th>
+                    <th>Type</th>
+                    <th>Floor</th>
+                    <th>Status</th>
+                    <th>Rate</th>
+                    {% if not request.hotel %}<th>Hotel</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                <tr>
+                    <td><strong>{{ room.room_number }}</strong></td>
+                    <td>{{ room.room_type.name }}</td>
+                    <td>{{ room.floor }}</td>
+                    <td>
+                        <span class="badge badge-{{ room.status }}">
+                            {{ room.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="amount">₹{{ room.room_type.base_rate|floatformat:0 }}</td>
+                    {% if not request.hotel %}<td>{{ room.hotel.code }}</td>{% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No rooms found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

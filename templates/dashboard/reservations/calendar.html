@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Room Calendar{% endblock %}
+
+{% block extra_css %}
+<style>
+    .calendar-table { font-size: 12px; border-collapse: separate; border-spacing: 3px; }
+    .calendar-table th {
+        position: sticky; top: 0; background: #fff; z-index: 10;
+        white-space: nowrap; min-width: 70px; text-align: center;
+        border-radius: 8px; padding: 8px 4px;
+    }
+    .calendar-table td {
+        padding: 2px; vertical-align: middle; height: 42px;
+        border-radius: 10px; border: 1px solid #e5e7eb;
+        transition: all 0.15s ease;
+    }
+    .calendar-table .room-cell {
+        position: sticky; left: 0; background: #fff; z-index: 5;
+        min-width: 100px; font-weight: 500; padding: 8px 10px;
+        border-radius: 10px;
+    }
+    .cell-available { background: #f8fdf8 !important; }
+    .cell-today { background: #fffde7 !important; border-color: #fbbf24 !important; }
+    .cell-booked-confirmed {
+        background: #3b82f6 !important; border-color: #2563eb !important;
+    }
+    .cell-booked-checked_in {
+        background: #22c55e !important; border-color: #16a34a !important;
+    }
+    .cell-booked-checked_out {
+        background: #9ca3af !important; border-color: #6b7280 !important;
+    }
+    .cell-booked-cancelled {
+        background: #ef4444 !important; border-color: #dc2626 !important;
+    }
+    .cell-booked-no_show {
+        background: #f59e0b !important; border-color: #d97706 !important;
+    }
+    .booking-label {
+        color: #fff;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-decoration: none;
+        display: block;
+        padding: 4px 6px;
+    }
+    .booking-label:hover { color: #fff; text-decoration: underline; }
+    .cell-clickable { cursor: pointer; }
+    .cell-empty:hover {
+        background: #e0f2fe !important;
+        border-color: #93c5fd !important;
+        transform: scale(1.03);
+    }
+    .day-header-today { background: #fff3cd !important; font-weight: bold; border-radius: 8px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">Room Calendar</h4>
+    <div class="d-flex gap-2 align-items-center">
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <input type="date" name="start" value="{{ start_date|date:'Y-m-d' }}"
+                   class="form-control form-control-sm" style="width: 155px;"
+                   onchange="this.form.submit()">
+            <select name="days" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <option value="7" {% if days == 7 %}selected{% endif %}>7 days</option>
+                <option value="14" {% if days == 14 %}selected{% endif %}>14 days</option>
+                <option value="30" {% if days == 30 %}selected{% endif %}>30 days</option>
+            </select>
+        </form>
+        <a href="{% url 'calendar_monthly' %}" class="btn btn-outline-secondary btn-sm">Monthly View</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table calendar-table mb-0">
+            <thead>
+                <tr>
+                    <th class="room-cell">Room</th>
+                    {% for d in dates %}
+                    <th class="{% if d == today %}day-header-today{% endif %}">
+                        {{ d|date:"D" }}<br>{{ d|date:"d M" }}
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in grid %}
+                <tr>
+                    <td class="room-cell">
+                        <strong>{{ row.room.room_number }}</strong><br>
+                        <small class="text-muted">{{ row.room.room_type.name }}</small>
+                    </td>
+                    {% for cell in row.cells %}
+                    {% if cell.is_booked %}
+                    <td class="cell-booked-{{ cell.booking.reservation.status }} p-0 cell-clickable"
+                        title="{{ cell.booking.reservation.guest.full_name }} — #{{ cell.booking.reservation.confirmation_number }} ({{ cell.booking.reservation.get_status_display }})"
+                        onclick="window.location='{% url 'reservation_detail' cell.booking.reservation.pk %}'">
+                        {% if cell.is_first_visible %}
+                        <span class="booking-label">
+                            {{ cell.booking.reservation.guest.full_name }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    {% else %}
+                    <td class="{% if cell.date == today %}cell-today{% else %}cell-available{% endif %} cell-clickable cell-empty"
+                        title="Book Room {{ row.room.room_number }} on {{ cell.date|date:'d M Y' }}"
+                        onclick="window.location='{% url 'reservation_create' %}?room={{ row.room.pk }}&room_type={{ row.room.room_type.pk }}&check_in={{ cell.date|date:'Y-m-d' }}'">
+                    </td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-3 d-flex gap-3 small text-muted">
+    <span><span class="badge" style="background:#3b82f6">&nbsp;&nbsp;&nbsp;</span> Confirmed</span>
+    <span><span class="badge" style="background:#22c55e">&nbsp;&nbsp;&nbsp;</span> Checked In</span>
+    <span><span class="badge" style="background:#fffde7; border:1px solid #ccc">&nbsp;&nbsp;&nbsp;</span> Today</span>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+/* Sidebar */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin: 2px 8px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    font-weight: 500;
+}
+
+/* Main content */
+.main-content {
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.content-area {
+    max-width: 1400px;
+}
+
+/* Stats cards */
+.stat-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.stat-card .stat-label {
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Room status badges */
+.badge-available { background: #22c55e; }
+.badge-occupied { background: #3b82f6; }
+.badge-dirty { background: #f59e0b; }
+.badge-maintenance { background: #ef4444; }
+.badge-blocked { background: #6b7280; }
+
+/* Reservation status badges */
+.badge-confirmed { background: #3b82f6; }
+.badge-checked_in { background: #22c55e; }
+.badge-checked_out { background: #6b7280; }
+.badge-cancelled { background: #ef4444; }
+.badge-no_show { background: #f59e0b; }
+
+/* Tables */
+.table th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    font-weight: 600;
+}
+
+/* Search results dropdown */
+#search-results .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 400px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1050;
+}
+
+/* Amount formatting */
+.amount {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-variant-numeric: tabular-nums;
+}

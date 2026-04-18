@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Guests{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Guests</h4>
+    <a href="{% url 'guest_create' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-person-plus me-1"></i> Add Guest
+    </a>
+</div>
+
+<!-- Filters -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" class="d-flex gap-2 align-items-center">
+            <input type="text" name="q" value="{{ search_query }}" class="form-control form-control-sm"
+                   placeholder="Search by name, phone, email..." style="max-width: 300px;">
+            <select name="nationality" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                <option value="">All Nationalities</option>
+                <option value="indian" {% if nationality_filter == "indian" %}selected{% endif %}>Indian</option>
+                <option value="foreign" {% if nationality_filter == "foreign" %}selected{% endif %}>Foreign</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary">Search</button>
+            {% if search_query or nationality_filter %}
+            <a href="{% url 'guest_list' %}" class="btn btn-sm btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- Guest Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Nationality</th>
+                    <th>ID</th>
+                    {% if not request.hotel %}<th>Hotel</th>{% endif %}
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for guest in guests %}
+                <tr>
+                    <td>
+                        <a href="{% url 'guest_detail' guest.pk %}" class="text-decoration-none fw-medium">
+                            {{ guest.full_name }}
+                        </a>
+                        {% if guest.is_foreign %}
+                        <span class="badge bg-info ms-1">Foreign</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ guest.phone }}</td>
+                    <td>{{ guest.email|default:"-" }}</td>
+                    <td>{{ guest.nationality }}</td>
+                    <td>{{ guest.get_id_type_display|default:"-" }}</td>
+                    {% if not request.hotel %}<td>{{ guest.hotel.code }}</td>{% endif %}
+                    <td>
+                        <a href="{% url 'guest_edit' guest.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">No guests found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

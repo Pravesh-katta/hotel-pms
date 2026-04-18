@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Folio {{ folio.folio_number }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0">Folio {{ folio.folio_number }}</h4>
+        <small class="text-muted">Booking #{{ folio.reservation.confirmation_number }} — {{ folio.reservation.guest.full_name }}</small>
+    </div>
+    <div class="d-flex gap-2">
+        {% if folio.status == "open" and folio.balance > 0 %}
+        <a href="{% url 'payment_page' folio.pk %}" class="btn btn-primary btn-sm">
+            <i class="bi bi-credit-card me-1"></i> Collect Payment
+        </a>
+        {% endif %}
+        <a href="{% url 'invoice_download' folio.pk %}" class="btn btn-outline-success btn-sm">
+            <i class="bi bi-file-pdf me-1"></i> Invoice
+        </a>
+        {% if payments %}
+        <a href="{% url 'refund' folio.pk %}" class="btn btn-outline-danger btn-sm">Refund</a>
+        {% endif %}
+        <a href="{% url 'reservation_detail' folio.reservation.pk %}" class="btn btn-outline-secondary btn-sm">View Reservation</a>
+        <a href="{% url 'folio_list' %}" class="btn btn-outline-secondary btn-sm">Back</a>
+    </div>
+</div>
+
+<!-- Summary -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Total Charges</div>
+            <div class="stat-value amount">₹{{ folio.total_charges|floatformat:0 }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Total Paid</div>
+            <div class="stat-value amount text-success">₹{{ folio.total_payments|floatformat:0 }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Balance Due</div>
+            <div class="stat-value amount {% if folio.balance > 0 %}text-danger{% endif %}">₹{{ folio.balance|floatformat:0 }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="mt-1">
+                <span class="badge bg-{% if folio.status == 'settled' %}success{% elif folio.status == 'void' %}secondary{% else %}primary{% endif %} fs-6">
+                    {{ folio.get_status_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charges -->
+<div class="card mb-3">
+    <div class="card-header"><h6 class="mb-0">Charges</h6></div>
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Date</th><th>Type</th><th>Description</th><th class="text-end">Amount</th></tr></thead>
+            <tbody>
+                {% for charge in charges %}
+                <tr>
+                    <td>{{ charge.charge_date|date:"d M" }}</td>
+                    <td>{{ charge.get_charge_type_display }}</td>
+                    <td>{{ charge.description }}</td>
+                    <td class="text-end amount">₹{{ charge.amount|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted">No charges</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Payments -->
+<div class="card">
+    <div class="card-header"><h6 class="mb-0">Payments</h6></div>
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead><tr><th>Date</th><th>Method</th><th>Status</th><th>Reference</th><th class="text-end">Amount</th></tr></thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.created_at|date:"d M Y H:i" }}</td>
+                    <td>{{ payment.get_method_display }}</td>
+                    <td><span class="badge bg-{% if payment.status == 'completed' %}success{% elif payment.status == 'failed' %}danger{% else %}warning{% endif %}">{{ payment.get_status_display }}</span></td>
+                    <td>{{ payment.razorpay_payment_id|default:payment.reference_number|default:"-" }}</td>
+                    <td class="text-end amount">₹{{ payment.amount|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-muted">No payments recorded</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

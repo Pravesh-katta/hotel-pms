@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ title }}</h4>
+    <a href="{% url 'rate_plan_list' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+</div>
+
+<div class="card" style="max-width: 700px;">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label">Name *</label>
+                    {{ form.name }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Type</label>
+                    {{ form.plan_type }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Source (optional)</label>
+                    {{ form.source }}
+                    <small class="text-muted">Restricts this plan to a booking source</small>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Priority</label>
+                    {{ form.priority }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Min Nights</label>
+                    {{ form.min_stay_nights }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cancellation Policy</label>
+                    {{ form.cancellation_policy }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cancel Hours</label>
+                    {{ form.cancellation_hours }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cancel Charge %</label>
+                    {{ form.cancellation_charge_percent }}
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check mt-2">
+                        {{ form.is_default }} <label class="form-check-label">Default rate plan</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.is_active }} <label class="form-check-label">Active</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Save Rate Plan</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

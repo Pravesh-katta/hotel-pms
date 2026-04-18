@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Rate Plans{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Rate Plans</h4>
+    <a href="{% url 'rate_plan_create' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-circle me-1"></i> New Rate Plan
+    </a>
+</div>
+
+{% for plan in plans %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <strong>{{ plan.name }}</strong>
+            <span class="badge bg-secondary ms-2">{{ plan.get_plan_type_display }}</span>
+            {% if plan.is_default %}<span class="badge bg-primary ms-1">Default</span>{% endif %}
+            {% if not plan.is_active %}<span class="badge bg-danger ms-1">Inactive</span>{% endif %}
+            {% if plan.source %}<small class="text-muted ms-2">Source: {{ plan.get_source_display }}</small>{% endif %}
+        </div>
+        <a href="{% url 'rate_plan_edit' plan.pk %}" class="btn btn-outline-primary btn-sm">Edit</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Base Rate</th>
+                    <th>Extra Adult</th>
+                    <th>Extra Child</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rpr in plan.rates.all %}
+                <tr>
+                    <td>{{ rpr.room_type.name }}</td>
+                    <td class="amount">₹{{ rpr.base_rate|floatformat:0 }}</td>
+                    <td class="amount">₹{{ rpr.extra_adult_rate|floatformat:0 }}</td>
+                    <td class="amount">₹{{ rpr.extra_child_rate|floatformat:0 }}</td>
+                    <td><a href="{% url 'seasonal_rate_manage' rpr.pk %}" class="btn btn-sm btn-outline-secondary">Seasonal</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-muted text-center">No room rates set</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer small text-muted">
+        Cancellation: {{ plan.get_cancellation_policy_display }} ({{ plan.cancellation_hours }}h)
+        | Priority: {{ plan.priority }}
+        | Min stay: {{ plan.min_stay_nights }} night{{ plan.min_stay_nights|pluralize }}
+    </div>
+</div>
+{% empty %}
+<div class="text-center text-muted py-5">
+    <p>No rate plans yet.</p>
+    <a href="{% url 'rate_plan_create' %}" class="btn btn-primary">Create Rate Plan</a>
+</div>
+{% endfor %}
+{% endblock %}

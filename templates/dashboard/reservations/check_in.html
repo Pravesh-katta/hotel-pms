@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Check In — {{ reservation.confirmation_number }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h4>Check In — #{{ reservation.confirmation_number }}</h4>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-sm">
+            <tr><td class="text-muted">Guest</td><td>{{ reservation.guest.full_name }}</td></tr>
+            <tr><td class="text-muted">Phone</td><td>{{ reservation.guest.phone }}</td></tr>
+            <tr><td class="text-muted">Check-in</td><td>{{ reservation.check_in_date|date:"d M Y" }}</td></tr>
+            <tr><td class="text-muted">Check-out</td><td>{{ reservation.check_out_date|date:"d M Y" }}</td></tr>
+            <tr><td class="text-muted">Nights</td><td>{{ reservation.num_nights }}</td></tr>
+            {% for rr in reservation.rooms.all %}
+            <tr><td class="text-muted">Room</td><td>{{ rr.room.room_number }} ({{ rr.room_type.name }})</td></tr>
+            {% endfor %}
+        </table>
+
+        {% if reservation.guest.is_foreign %}
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            Foreign guest — Form C must be submitted to FRRO within 24 hours.
+        </div>
+        {% endif %}
+
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-1"></i>
+            Please verify guest ID before checking in.
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Confirm Check-In
+            </button>
+            <a href="{% url 'reservation_detail' reservation.pk %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<p>Dear {{ guest_name }},</p>
+
+<p>Your booking has been confirmed!</p>
+
+<div class="info-box">
+    <div class="info-row"><span class="info-label">Confirmation #</span><span class="info-value">{{ confirmation_number }}</span></div>
+    <div class="info-row"><span class="info-label">Hotel</span><span class="info-value">{{ hotel_name }}</span></div>
+    <div class="info-row"><span class="info-label">Check-in</span><span class="info-value">{{ check_in_date }}</span></div>
+    <div class="info-row"><span class="info-label">Check-out</span><span class="info-value">{{ check_out_date }}</span></div>
+</div>
+
+<p><strong>Things to bring:</strong></p>
+<ul>
+    <li>Valid photo ID (Aadhar Card / Passport / Driving License)</li>
+    <li>Foreign nationals: Please carry your Passport and Visa</li>
+</ul>
+
+<p>We look forward to welcoming you!</p>
+{% endblock %}

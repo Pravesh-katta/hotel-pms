@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Refund — {{ folio.folio_number }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h4>Process Refund</h4>
+    <small class="text-muted">Folio {{ folio.folio_number }}</small>
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <div class="card-body">
+        {% if payments %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Select Payment to Refund</label>
+                <select name="payment_id" class="form-select" required>
+                    {% for p in payments %}
+                    <option value="{{ p.pk }}">
+                        ₹{{ p.amount|floatformat:0 }} — {{ p.get_method_display }} ({{ p.created_at|date:"d M Y" }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Refund Amount (₹) *</label>
+                <input type="number" name="amount" class="form-control" step="0.01" min="1" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Reason *</label>
+                <input type="text" name="reason" class="form-control" required
+                       placeholder="e.g. Cancellation, Overcharge, Guest complaint">
+            </div>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-arrow-return-left me-1"></i> Process Refund
+            </button>
+            <a href="{% url 'folio_detail' folio.pk %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+        {% else %}
+        <p class="text-muted">No completed payments to refund.</p>
+        <a href="{% url 'folio_detail' folio.pk %}" class="btn btn-outline-secondary">Back</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Staff{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">Staff Management</h4>
+    <a href="{% url 'staff_create' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-person-plus me-1"></i> Add Staff
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Phone</th>
+                    {% if not request.hotel %}<th>Hotel</th>{% endif %}
+                    <th>Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in staff %}
+                <tr {% if not s.user.is_active %}class="table-secondary"{% endif %}>
+                    <td>{{ s.user.get_full_name }}</td>
+                    <td>{{ s.user.username }}</td>
+                    <td><span class="badge bg-secondary">{{ s.get_role_display }}</span></td>
+                    <td>{{ s.phone|default:"-" }}</td>
+                    {% if not request.hotel %}<td>{{ s.hotel.code|default:"ALL" }}</td>{% endif %}
+                    <td>
+                        {% if s.user.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'staff_toggle_active' s.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-{% if s.user.is_active %}danger{% else %}success{% endif %}">
+                                {% if s.user.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

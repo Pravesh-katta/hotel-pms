@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">{{ title }}</h4>
+    <a href="{% url 'ota_list' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+</div>
+
+<div class="card" style="max-width: 600px;">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Channel *</label>
+                    {{ form.channel }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Connection Type *</label>
+                    {{ form.connection_type }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Channel Manager</label>
+                    {{ form.channel_manager_name }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Property ID on OTA</label>
+                    {{ form.external_property_id }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">API Key (public)</label>
+                    {{ form.api_key_id }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">iCal URL</label>
+                    {{ form.ical_url }}
+                </div>
+                <div class="col-12">
+                    <div class="form-check">
+                        {{ form.sync_bookings }} <label class="form-check-label">Sync Bookings</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.sync_rates }} <label class="form-check-label">Sync Rates</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.sync_availability }} <label class="form-check-label">Sync Availability</label>
+                    </div>
+                    <div class="form-check">
+                        {{ form.is_active }} <label class="form-check-label">Active</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Notes</label>
+                    {{ form.notes }}
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

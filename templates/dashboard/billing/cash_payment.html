@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Record Payment — {{ folio.folio_number }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h4>Record Cash / Bank Transfer</h4>
+    <small class="text-muted">Folio {{ folio.folio_number }} — Balance: ₹{{ balance|floatformat:0 }}</small>
+</div>
+
+<div class="card" style="max-width: 500px;">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Payment Method</label>
+                <select name="method" class="form-select">
+                    <option value="cash">Cash</option>
+                    <option value="bank_transfer">Bank Transfer (NEFT/RTGS/IMPS)</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Amount (₹) *</label>
+                <input type="number" name="amount" class="form-control" step="0.01"
+                       value="{{ balance }}" min="1" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Reference Number</label>
+                <input type="text" name="reference_number" class="form-control"
+                       placeholder="Receipt #, UTR number, etc.">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Notes</label>
+                <textarea name="notes" class="form-control" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle me-1"></i> Record Payment
+            </button>
+            <a href="{% url 'folio_detail' folio.pk %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ guest.full_name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0">{{ guest.full_name }}</h4>
+        <small class="text-muted">Guest Profile</small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'guest_edit' guest.pk %}" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-pencil me-1"></i> Edit
+        </a>
+        <a href="{% url 'guest_list' %}" class="btn btn-outline-secondary btn-sm">Back</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><h6 class="mb-0">Contact Info</h6></div>
+            <div class="card-body">
+                <table class="table table-sm mb-0">
+                    <tr><td class="text-muted">Phone</td><td>{{ guest.phone }}</td></tr>
+                    <tr><td class="text-muted">Email</td><td>{{ guest.email|default:"-" }}</td></tr>
+                    <tr><td class="text-muted">Nationality</td><td>
+                        {{ guest.nationality }}
+                        {% if guest.is_foreign %}<span class="badge bg-info ms-1">Foreign</span>{% endif %}
+                    </td></tr>
+                    <tr><td class="text-muted">Gender</td><td>{{ guest.get_gender_display|default:"-" }}</td></tr>
+                    <tr><td class="text-muted">Date of Birth</td><td>{{ guest.date_of_birth|date:"d M Y"|default:"-" }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header"><h6 class="mb-0">ID & Address</h6></div>
+            <div class="card-body">
+                <table class="table table-sm mb-0">
+                    <tr><td class="text-muted">ID Type</td><td>{{ guest.get_id_type_display|default:"-" }}</td></tr>
+                    <tr><td class="text-muted">ID Number</td><td>{{ guest.id_number|default:"-" }}</td></tr>
+                    <tr><td class="text-muted">Address</td><td>{{ guest.address|default:"-" }}</td></tr>
+                    <tr><td class="text-muted">City</td><td>{{ guest.city|default:"-" }}, {{ guest.state|default:"" }}</td></tr>
+                    <tr><td class="text-muted">Pincode</td><td>{{ guest.pincode|default:"-" }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if reservations %}
+<div class="card mt-3">
+    <div class="card-header"><h6 class="mb-0">Booking History</h6></div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Booking #</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Status</th>
+                    <th>Source</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reservations %}
+                <tr>
+                    <td><a href="{% url 'reservation_detail' r.pk %}">{{ r.confirmation_number }}</a></td>
+                    <td>{{ r.check_in_date|date:"d M Y" }}</td>
+                    <td>{{ r.check_out_date|date:"d M Y" }}</td>
+                    <td><span class="badge badge-{{ r.status }}">{{ r.get_status_display }}</span></td>
+                    <td>{{ r.get_source_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if guest.notes %}
+<div class="card mt-3">
+    <div class="card-header"><h6 class="mb-0">Notes</h6></div>
+    <div class="card-body">{{ guest.notes }}</div>
+</div>
+{% endif %}
+{% endblock %}

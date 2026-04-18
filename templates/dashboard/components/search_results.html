@@ -1,0 +1,41 @@
+{% if guests or reservations or rooms %}
+<div class="dropdown-menu show shadow" style="position: absolute; top: 0; left: -200px; width: 400px;">
+
+    {% if guests %}
+    <h6 class="dropdown-header">Guests</h6>
+    {% for guest in guests %}
+    <a class="dropdown-item py-2" href="{% url 'guest_detail' guest.pk %}">
+        <i class="bi bi-person me-2 text-muted"></i>
+        <strong>{{ guest.full_name }}</strong>
+        <span class="text-muted ms-2">{{ guest.phone }}</span>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if reservations %}
+    {% if guests %}<div class="dropdown-divider"></div>{% endif %}
+    <h6 class="dropdown-header">Reservations</h6>
+    {% for r in reservations %}
+    <a class="dropdown-item py-2" href="{% url 'reservation_detail' r.pk %}">
+        <i class="bi bi-calendar-check me-2 text-muted"></i>
+        <strong>#{{ r.confirmation_number }}</strong>
+        <span class="text-muted ms-2">{{ r.guest.full_name }}</span>
+        <span class="badge badge-{{ r.status }} ms-2">{{ r.get_status_display }}</span>
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if rooms %}
+    {% if guests or reservations %}<div class="dropdown-divider"></div>{% endif %}
+    <h6 class="dropdown-header">Rooms</h6>
+    {% for room in rooms %}
+    <a class="dropdown-item py-2" href="{% url 'room_list' %}">
+        <i class="bi bi-door-open me-2 text-muted"></i>
+        <strong>Room {{ room.room_number }}</strong>
+        <span class="text-muted ms-2">{{ room.room_type.name }}</span>
+        <span class="badge badge-{{ room.status }} ms-2">{{ room.get_status_display }}</span>
+    </a>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endif %}
