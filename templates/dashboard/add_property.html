@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Add Property{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0">Add New Property</h4>
+        {% if group %}<small class="text-muted">Will be added to group: <strong>{{ group.name }}</strong></small>{% endif %}
+    </div>
+    <a href="{% url 'group_dashboard' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<form method="post" class="card p-4 shadow-sm">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="row g-3">
+        <div class="col-md-8">
+            <label class="form-label">Name *</label>
+            {{ form.name }}
+            {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors|join:", " }}</div>{% endif %}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Code *</label>
+            {{ form.code }}
+            {% if form.code.errors %}<div class="text-danger small">{{ form.code.errors|join:", " }}</div>{% endif %}
+        </div>
+        <div class="col-12">
+            <label class="form-label">Address</label>
+            {{ form.address }}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">City</label>
+            {{ form.city }}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">State</label>
+            {{ form.state }}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Country</label>
+            {{ form.country }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Phone</label>
+            {{ form.phone }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Email</label>
+            {{ form.email }}
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Currency</label>
+            {{ form.currency }}
+        </div>
+        <div class="col-md-5">
+            <label class="form-label">Timezone</label>
+            {{ form.timezone }}
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Max rooms</label>
+            {{ form.max_rooms }}
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{% url 'group_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Create Property</button>
+    </div>
+</form>
+{% endblock %}

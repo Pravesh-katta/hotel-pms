@@ -4,10 +4,13 @@
             <i class="bi bi-building"></i> Hotel PMS
         </h5>
         {% if request.hotel %}
-        <small class="text-light opacity-75">{{ request.hotel.name }}</small>
+        <small class="text-light opacity-75 d-block">{{ request.hotel.name }}</small>
         {% else %}
-        <small class="text-warning">All Hotels</small>
+        <small class="text-warning d-block">All Hotels</small>
         {% endif %}
+        <a href="{% url 'group_dashboard' %}" class="text-info small text-decoration-none">
+            <i class="bi bi-arrow-left-right"></i> Switch property
+        </a>
     </div>
 
     <ul class="nav flex-column p-2">

@@ -2,7 +2,16 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
-from .models import StaffProfile
+from .models import HotelMembership, StaffProfile
+
+
+@admin.register(HotelMembership)
+class HotelMembershipAdmin(admin.ModelAdmin):
+    list_display = ["user", "hotel", "role", "is_active", "created_at"]
+    list_filter = ["role", "is_active", "hotel"]
+    search_fields = ["user__username", "user__email", "hotel__name", "hotel__code"]
+    autocomplete_fields = ["user", "hotel"]
+    list_select_related = ["user", "hotel"]
 
 
 class StaffProfileInline(admin.StackedInline):

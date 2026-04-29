@@ -36,3 +36,29 @@ class StaffProfile(models.Model):
 
     def has_role(self, *roles):
         return self.role in roles
+
+
+class HotelMembership(models.Model):
+    ROLE_CHOICES = [
+        ("hotel_admin", "Hotel Admin"),
+        ("manager", "Manager"),
+        ("front_desk", "Front Desk"),
+        ("housekeeping", "Housekeeping"),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="hotel_memberships"
+    )
+    hotel = models.ForeignKey(
+        "hotels.Hotel", on_delete=models.CASCADE, related_name="memberships"
+    )
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [("user", "hotel")]
+        ordering = ["hotel__name", "user__username"]
+
+    def __str__(self):
+        return f"{self.user.username} @ {self.hotel.code} ({self.get_role_display()})"

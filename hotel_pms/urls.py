@@ -13,6 +13,7 @@ urlpatterns = [
     path("health/", health_check, name="health_check"),
     path("superadmin/", admin.site.urls),
     path("accounts/", include("apps.accounts.urls")),
+    path("hotel-dashboard/", include("apps.hotels.urls_group")),
     path("dashboard/", include("apps.hotels.urls")),
     path("dashboard/rooms/", include("apps.rooms.urls")),
     path("dashboard/calendar/", include("apps.rooms.urls_calendar")),
